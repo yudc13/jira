@@ -1,4 +1,23 @@
-const SearchPanel = ({ users, params, setParams }) => {
+import React from 'react';
+
+export interface User {
+  id: string;
+  name: string;
+}
+export interface Params {
+  id: string;
+  name: string;
+}
+export interface SearchPanelProps {
+  users: User[];
+  params: Params;
+  setParams: React.Dispatch<React.SetStateAction<Params>>;
+}
+const SearchPanel: React.FC<SearchPanelProps> = ({
+  users,
+  params,
+  setParams,
+}) => {
   return (
     <form>
       <input

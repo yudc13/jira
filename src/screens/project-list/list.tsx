@@ -1,6 +1,19 @@
-const List = ({ projects, users }) => {
+import React from 'react';
+import { User } from './search-panel';
+
+export interface Project {
+  id: string;
+  name: string;
+  userId: string;
+}
+export interface ListProps {
+  projects: Project[];
+  users: User[];
+}
+
+const List: React.FC<ListProps> = ({ projects, users }) => {
   return (
-    <table border="1" style={{ width: 220 }}>
+    <table style={{ width: 220 }}>
       <thead>
         <tr>
           <th>名称</th>
