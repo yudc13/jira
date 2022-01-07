@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import qs from 'qs';
 import List from './list';
-import SearchPanel from './search-panel';
+import SearchPanel, { Params } from './search-panel';
 import { clearObject } from '@/utils';
 import useDebounce from '@/hooks/useDebounce';
 
 const apiUrl = process.env.REACT_APP_URL;
 
 const ProjectList = () => {
-  const [params, setParams] = useState({ name: '', id: '' });
+  const [params, setParams] = useState<Params>({ name: '', id: '' });
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
 
-  const debounceParams = useDebounce(params, 1000);
+  const debounceParams = useDebounce<Params>(params, 1000);
 
   useEffect(() => {
     fetch(`${apiUrl}/users`).then(async (response) => {
