@@ -5,7 +5,7 @@ import SearchPanel, { Params } from './search-panel';
 import { clearObject } from '@/utils';
 import useDebounce from '@/hooks/useDebounce';
 
-const apiUrl = process.env.REACT_APP_URL;
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const ProjectList = () => {
   const [params, setParams] = useState<Params>({ name: '', id: '' });

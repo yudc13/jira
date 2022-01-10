@@ -1,6 +1,6 @@
 import React from 'react';
 
-const apiUrl = process.env.REACT_APP_URL;
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Login = () => {
   const login = (username: string, password: string) => {
