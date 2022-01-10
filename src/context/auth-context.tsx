@@ -1,6 +1,7 @@
 import { User } from '@/screens/project-list/search-panel';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as auth from '@/auth-provider';
+import { http } from '@/utils/http';
 
 type LoginFn = (username: string, password: string) => Promise<void>;
 
@@ -10,6 +11,18 @@ interface AuthContextValue {
   register: LoginFn;
   logout: () => void;
 }
+
+type T = { user: User };
+
+const bootstrapUser = async () => {
+  let user = null;
+  const token = auth.getToken();
+  if (token) {
+    const data = await http<T>('me', { token });
+    user = data.user;
+  }
+  return user;
+};
 
 const AuthContext = React.createContext<AuthContextValue | undefined>(
   undefined
@@ -24,6 +37,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = (username: string, password: string) =>
     auth.register(username, password).then(setUser);
   const logout = () => auth.logout().then(() => setUser(null));
+
+  useEffect(() => {
+    bootstrapUser().then(setUser);
+  }, []);
+
   return (
     <AuthContext.Provider value={{ user, login, logout, register }}>
       {children}

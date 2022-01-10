@@ -4,7 +4,7 @@ import { User } from './search-panel';
 export interface Project {
   id: string;
   name: string;
-  userId: string;
+  personId: string;
 }
 export interface ListProps {
   projects: Project[];
@@ -24,7 +24,7 @@ const List: React.FC<ListProps> = ({ projects, users }) => {
         {projects.map((item) => (
           <tr key={item.id}>
             <td>{item.name}</td>
-            <td>{users.find((user) => user.id === item.userId)?.name}</td>
+            <td>{users.find((user) => user.id === item.personId)?.name}</td>
           </tr>
         ))}
       </tbody>

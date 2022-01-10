@@ -1,35 +1,30 @@
 import { useEffect, useState } from 'react';
-import qs from 'qs';
-import List from './list';
-import SearchPanel, { Params } from './search-panel';
+import List, { Project } from './list';
+import SearchPanel, { Params, User } from './search-panel';
 import { clearObject } from '@/utils';
 import useDebounce from '@/hooks/useDebounce';
-
-const apiUrl = process.env.REACT_APP_API_URL;
+import { useHttp } from '@/utils/http';
 
 const ProjectList = () => {
-  const [params, setParams] = useState<Params>({ name: '', id: '' });
-  const [projects, setProjects] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [params, setParams] = useState<Params>({ name: '', personId: '' });
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const http = useHttp();
 
   const debounceParams = useDebounce<Params>(params, 1000);
 
   useEffect(() => {
-    fetch(`${apiUrl}/users`).then(async (response) => {
-      if (response.ok) {
-        setUsers(await response.json());
-      }
+    http<User[]>(`users`, {}).then(async (data) => {
+      setUsers(data);
     });
   }, []);
 
   useEffect(() => {
-    fetch(
-      `${apiUrl}/projects?${qs.stringify(clearObject(debounceParams))}`
-    ).then(async (response) => {
-      if (response.ok) {
-        setProjects(await response.json());
+    http<Project[]>('projects', { data: clearObject(debounceParams) }).then(
+      async (data) => {
+        setProjects(data);
       }
-    });
+    );
   }, [debounceParams]);
 
   return (
