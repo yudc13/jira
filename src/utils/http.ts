@@ -1,7 +1,6 @@
 import { useAuth } from './../context/auth-context';
 import qs from 'qs';
 import { apiUrl, logout } from '@/auth-provider';
-import { useCallback, useRef } from 'react';
 
 interface Config extends RequestInit {
   token?: string;
