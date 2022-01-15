@@ -1,4 +1,5 @@
 import React from 'react';
+import { Table } from 'antd';
 import { User } from './search-panel';
 
 export interface Project {
@@ -12,24 +13,17 @@ export interface ListProps {
 }
 
 const List: React.FC<ListProps> = ({ projects, users }) => {
-  return (
-    <table style={{ width: 220 }}>
-      <thead>
-        <tr>
-          <th>名称</th>
-          <th>负责人</th>
-        </tr>
-      </thead>
-      <tbody>
-        {projects.map((item) => (
-          <tr key={item.id}>
-            <td>{item.name}</td>
-            <td>{users.find((user) => user.id === item.personId)?.name}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+  const columns = [
+    { key: 'name', title: '名称', dataIndex: 'name' },
+    {
+      key: 'personId',
+      title: '负责人',
+      dataIndex: 'personId',
+      render: (personId: string) =>
+        users.find((user) => user.id === personId)?.name,
+    },
+  ];
+  return <Table pagination={false} dataSource={projects} columns={columns} />;
 };
 
 export default List;
