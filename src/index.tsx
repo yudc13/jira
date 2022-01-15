@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { loadDevTools } from 'jira-dev-tool';
 import './theme.less';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from './context';
