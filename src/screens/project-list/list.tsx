@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Table, TableProps } from 'antd';
 import dayjs from 'dayjs';
 import { User } from './search-panel';
 
@@ -10,12 +10,11 @@ export interface Project {
   organization: string;
   created: number;
 }
-export interface ListProps {
-  projects: Project[];
+export interface ListProps extends TableProps<Project> {
   users: User[];
 }
 
-const List: React.FC<ListProps> = ({ projects, users }) => {
+const List: React.FC<ListProps> = ({ users, ...rest }) => {
   const columns = [
     { key: 'name', title: '名称', dataIndex: 'name' },
     { key: 'organization', title: '部门', dataIndex: 'organization' },
@@ -34,7 +33,7 @@ const List: React.FC<ListProps> = ({ projects, users }) => {
         created ? dayjs(created).format('YYYY-MM-DD') : '',
     },
   ];
-  return <Table pagination={false} dataSource={projects} columns={columns} />;
+  return <Table pagination={false} columns={columns} {...rest} />;
 };
 
 export default List;
