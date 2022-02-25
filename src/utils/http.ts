@@ -1,4 +1,4 @@
-import { useAuth } from './../context/auth-context';
+import { useAuth } from '@/context/auth-context';
 import qs from 'qs';
 import { apiUrl, logout } from '@/auth-provider';
 
@@ -9,7 +9,7 @@ interface Config extends RequestInit {
 
 export const http = async <T>(
   url: string,
-  { data, token, headers, ...customeConfig }: Config
+  { data, token, headers, ...customConfig }: Config
 ): Promise<T> => {
   const config = {
     method: 'GET',
@@ -17,7 +17,7 @@ export const http = async <T>(
       Authorization: token ? `Bearer ${token}` : '',
       'Content-Type': data ? 'application/json' : '',
     },
-    ...customeConfig,
+    ...customConfig,
   };
   if (config.method.toLocaleUpperCase() === 'GET') {
     url += `?${qs.stringify(data || {})}`;

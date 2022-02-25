@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select, Input } from 'antd';
+import { Select, Input, Form } from 'antd';
 
 export interface User {
   id: string;
@@ -21,24 +21,28 @@ const SearchPanel: React.FC<SearchPanelProps> = ({
   setParams,
 }) => {
   return (
-    <form>
-      <Input
-        value={params.name}
-        placeholder="请输入名称"
-        onChange={(evt) => setParams({ ...params, name: evt.target.value })}
-      />
-      <Select
-        value={params.personId}
-        onChange={(value) => setParams({ ...params, personId: value })}
-      >
-        <Select.Option value={''}>负责人</Select.Option>
-        {users.map((user) => (
-          <Select.Option key={user.id} value={user.id}>
-            {user.name}
-          </Select.Option>
-        ))}
-      </Select>
-    </form>
+    <Form layout="inline" style={{ marginBottom: '2rem' }}>
+      <Form.Item>
+        <Input
+          value={params.name}
+          placeholder="请输入名称"
+          onChange={(evt) => setParams({ ...params, name: evt.target.value })}
+        />
+      </Form.Item>
+      <Form.Item>
+        <Select
+          value={params.personId}
+          onChange={(value) => setParams({ ...params, personId: value })}
+        >
+          <Select.Option value={''}>负责人</Select.Option>
+          {users.map((user) => (
+            <Select.Option key={user.id} value={user.id}>
+              {user.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </Form>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
 import List, { Project } from './list';
 import SearchPanel, { Params, User } from './search-panel';
 import { clearObject } from '@/utils';
@@ -28,15 +29,19 @@ const ProjectList = () => {
   }, [debounceParams]);
 
   return (
-    <>
+    <Container>
       <SearchPanel
         params={params}
         users={users}
         setParams={(params) => setParams(params)}
       />
       <List projects={projects} users={users} />
-    </>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  padding: 3.2rem;
+`;
 
 export default ProjectList;
