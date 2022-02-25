@@ -38,9 +38,11 @@ const useAsync = <D>(initialState?: State<D>) => {
     promise
       .then((data) => {
         setData(data);
+        return data;
       })
       .catch((error) => {
         setError(error);
+        return Promise.reject(error);
       });
   };
   return {

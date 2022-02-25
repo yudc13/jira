@@ -2,6 +2,8 @@ import { User } from '@/screens/project-list/search-panel';
 import React, { useEffect, useState } from 'react';
 import * as auth from '@/auth-provider';
 import { http } from '@/utils/http';
+import useAsync from '@/hooks/useAsync';
+import { FullErrorPage, FullLoadingPage } from '@/components/libs';
 
 type LoginFn = (username: string, password: string) => Promise<void>;
 
@@ -30,7 +32,15 @@ const AuthContext = React.createContext<AuthContextValue | undefined>(
 AuthContext.displayName = 'AuthContext';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const {
+    run,
+    isLoading,
+    isError,
+    error,
+    isIdle,
+    setData: setUser,
+    data: user,
+  } = useAsync<User | null>();
 
   const login = (username: string, password: string) =>
     auth.login(username, password).then(setUser);
@@ -39,8 +49,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = () => auth.logout().then(() => setUser(null));
 
   useEffect(() => {
-    bootstrapUser().then(setUser);
+    run(bootstrapUser());
+    // eslint-disable-next-line
   }, []);
+
+  if (isIdle || isLoading) {
+    return <FullLoadingPage />;
+  }
+
+  if (isError) {
+    return <FullErrorPage error={error} />;
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, logout, register }}>

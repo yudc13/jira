@@ -25,7 +25,7 @@ export const login = (username: string, password: string) => {
     if (response.ok) {
       return handleUserResponse(await response.json());
     }
-    return Promise.reject();
+    return Promise.reject(await response.json());
   });
 };
 
@@ -43,7 +43,7 @@ export const register = (username: string, password: string) => {
     if (response.ok) {
       return handleUserResponse(await response.json());
     }
-    return Promise.reject();
+    return Promise.reject(await response.json());
   });
 };
 
