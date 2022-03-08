@@ -1,5 +1,5 @@
 import { User } from '@/screens/project-list/search-panel';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as auth from '@/auth-provider';
 import { http } from '@/utils/http';
 import useAsync from '@/hooks/useAsync';

@@ -12,7 +12,7 @@ const defaultState: State<null> = {
   error: null,
 };
 
-const useAsync = <D>(initialState?: State<D>) => {
+const useAsync = <D>(initialState?: Partial<State<D>>) => {
   const [state, setState] = useState<State<D | null>>({
     ...defaultState,
     ...initialState,
@@ -35,13 +35,15 @@ const useAsync = <D>(initialState?: State<D>) => {
     if (!promise) {
       throw new Error('参数必须是一个Promise类型');
     }
-    promise
+    setState({ stat: 'loading', data: null, error: null });
+    return promise
       .then((data) => {
         setData(data);
         return data;
       })
       .catch((error) => {
         setError(error);
+        // catch会消化异常，如果不主动抛出错误 外面将无法捕获到异常
         return Promise.reject(error);
       });
   };
