@@ -1,7 +1,9 @@
 import React from 'react';
 import { Table, TableProps } from 'antd';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { User } from './search-panel';
+import { projects } from 'jira-dev-tool/dist/server/initial-data';
 
 export interface Project {
   id: string;
@@ -16,7 +18,14 @@ export interface ListProps extends TableProps<Project> {
 
 const List: React.FC<ListProps> = ({ users, ...rest }) => {
   const columns = [
-    { key: 'name', title: '名称', dataIndex: 'name' },
+    {
+      key: 'name',
+      title: '名称',
+      dataIndex: 'name',
+      render: (name: string, record: Project) => (
+        <Link to={`/projects/${record.id}`}>{name}</Link>
+      ),
+    },
     { key: 'organization', title: '部门', dataIndex: 'organization' },
     {
       key: 'personId',
