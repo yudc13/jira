@@ -33,7 +33,7 @@ const List: React.FC<ListProps> = ({ users, ...rest }) => {
         created ? dayjs(created).format('YYYY-MM-DD') : '',
     },
   ];
-  return <Table pagination={false} columns={columns} {...rest} />;
+  return <Table rowKey="id" pagination={false} columns={columns} {...rest} />;
 };
 
 export default List;

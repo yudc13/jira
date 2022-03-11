@@ -6,6 +6,7 @@ import SearchPanel, { Params } from './search-panel';
 import useDebounce from '@/hooks/useDebounce';
 import { useProject } from '@/hooks/projects';
 import { useUsers } from '@/hooks/users';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
 
 const ProjectList = () => {
   const [params, setParams] = useState<Params>({ name: '', personId: '' });
@@ -20,6 +21,7 @@ const ProjectList = () => {
   } = useProject(debounceParams);
 
   const { data: users } = useUsers();
+  useDocumentTitle('项目列表');
 
   return (
     <Container>
