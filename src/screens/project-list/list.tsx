@@ -3,21 +3,36 @@ import { Table, TableProps } from 'antd';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { User } from './search-panel';
-import { projects } from 'jira-dev-tool/dist/server/initial-data';
+import Pin from '@/components/pin';
+import { useEditProject } from '@/hooks/projects';
 
 export interface Project {
-  id: string;
+  id: number;
   name: string;
-  personId: string;
+  personId: number;
   organization: string;
   created: number;
+  pin?: boolean;
 }
 export interface ListProps extends TableProps<Project> {
   users: User[];
 }
 
 const List: React.FC<ListProps> = ({ users, ...rest }) => {
+  const { mutate } = useEditProject();
+  // 这里使用柯里化是做
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
   const columns = [
+    {
+      key: 'pin',
+      title: <Pin checked={true} disabled={true} />,
+      render: (pin: boolean, record: Project) => (
+        <Pin
+          checked={record.pin || false}
+          onCheckChange={pinProject(record.id)}
+        />
+      ),
+    },
     {
       key: 'name',
       title: '名称',
@@ -31,7 +46,7 @@ const List: React.FC<ListProps> = ({ users, ...rest }) => {
       key: 'personId',
       title: '负责人',
       dataIndex: 'personId',
-      render: (personId: string) =>
+      render: (personId: number) =>
         users.find((user) => user.id === personId)?.name,
     },
     {

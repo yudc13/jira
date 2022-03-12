@@ -1,3 +1,4 @@
+import './components/wdyr';
 import React from 'react';
 import './App.css';
 import AuthenticatedApp from './authenticated-app';

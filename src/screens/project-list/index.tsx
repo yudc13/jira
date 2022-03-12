@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from '@emotion/styled';
 import { Typography } from 'antd';
 import List from './list';
@@ -7,9 +6,14 @@ import useDebounce from '@/hooks/useDebounce';
 import { useProject } from '@/hooks/projects';
 import { useUsers } from '@/hooks/users';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
+import { useProjectSearchParams } from '@/screens/project-list/utils';
 
 const ProjectList = () => {
-  const [params, setParams] = useState<Params>({ name: '', personId: '' });
+  useDocumentTitle('项目列表');
+
+  const [params, setParams] = useProjectSearchParams();
+
+  console.log(params);
 
   const debounceParams = useDebounce<Params>(params, 1000);
 
@@ -21,15 +25,10 @@ const ProjectList = () => {
   } = useProject(debounceParams);
 
   const { data: users } = useUsers();
-  useDocumentTitle('项目列表');
 
   return (
     <Container>
-      <SearchPanel
-        params={params}
-        users={users || []}
-        setParams={(params) => setParams(params)}
-      />
+      <SearchPanel params={params} setParams={(params) => setParams(params)} />
       {isError && (
         <Typography.Text type="danger">{error?.message}</Typography.Text>
       )}
@@ -41,6 +40,8 @@ const ProjectList = () => {
     </Container>
   );
 };
+
+ProjectList.whyDidYouRender = true;
 
 const Container = styled.div`
   padding: 3.2rem;

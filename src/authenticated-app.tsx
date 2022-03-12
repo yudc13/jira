@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
 import { Button, Dropdown, Menu } from 'antd';
 import { useAuth } from './context/auth-context';
 import ProjectList from './screens/project-list';
@@ -16,8 +16,9 @@ const AuthenticatedApp = () => {
       <Main>
         <BrowserRouter>
           <Routes>
+            <Route path={'/'} element={<Navigate to={`/projects`} />} />
             <Route path={'/projects'} element={<ProjectList />} />
-            <Route path={'projects/:projectId'} element={Project} />
+            <Route path={'/projects/:projectId/*'} element={<Project />} />
           </Routes>
         </BrowserRouter>
       </Main>

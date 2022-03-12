@@ -19,3 +19,20 @@ export const useProject = (params?: Params) => {
     error,
   };
 };
+
+export const useEditProject = () => {
+  const { run, ...rest } = useAsync();
+  const http = useHttp();
+  const mutate = (param: Partial<Project>) => {
+    return run(
+      http(`/projects/${param.id}`, {
+        data: param,
+        method: 'PATCH',
+      })
+    );
+  };
+  return {
+    mutate,
+    rest,
+  };
+};
