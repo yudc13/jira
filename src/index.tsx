@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { loadDevTools } from 'jira-dev-tool';
+import { loadServer, DevTools } from 'jira-dev-tool';
 import './theme.less';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from './context';
 
-loadDevTools(() => {
+loadServer(() => {
   ReactDOM.render(
     <React.StrictMode>
       <AppProvider>
+        <DevTools />
         <App />
       </AppProvider>
     </React.StrictMode>,

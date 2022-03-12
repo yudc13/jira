@@ -25,7 +25,7 @@ export const useEditProject = () => {
   const http = useHttp();
   const mutate = (param: Partial<Project>) => {
     return run(
-      http(`/projects/${param.id}`, {
+      http(`projects/${param.id}`, {
         data: param,
         method: 'PATCH',
       })
