@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { Row } from './components/libs';
 
 import { ReactComponent as Logo } from '@/assets/software-logo.svg';
+import ProjectPopover from '@/components/project-popover';
 
 const AuthenticatedApp = () => {
   return (
@@ -32,8 +33,8 @@ const PageHeader = () => {
     <Header between gap>
       <HeaderLeft gap>
         <Logo width="18rem" color="rgb(38, 132, 255)" />
-        <h3>项目</h3>
-        <h3>用户</h3>
+        <ProjectPopover />
+        <span>用户</span>
       </HeaderLeft>
       <HeaderRight>
         <Dropdown
