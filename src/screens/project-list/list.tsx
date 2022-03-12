@@ -16,12 +16,14 @@ export interface Project {
 }
 export interface ListProps extends TableProps<Project> {
   users: User[];
+  refresh?: () => void;
 }
 
 const List: React.FC<ListProps> = ({ users, ...rest }) => {
   const { mutate } = useEditProject();
   // 这里使用柯里化是做
-  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
+  const pinProject = (id: number) => (pin: boolean) =>
+    mutate({ id, pin }).then(rest.refresh);
   const columns = [
     {
       key: 'pin',

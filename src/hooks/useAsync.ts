@@ -17,6 +17,8 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
     ...defaultState,
     ...initialState,
   });
+  // useState初始值是一个惰性的state，只有在初次渲染的时候调用
+  const [retry, setRetry] = useState(() => () => {});
   const setData = (data: D) => {
     setState({
       stat: 'success',
@@ -31,10 +33,19 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
       data: null,
     });
   };
-  const run = (promise: Promise<D>) => {
+  const run = (
+    promise: Promise<D>,
+    runConfig?: { retry: () => Promise<D> }
+  ) => {
     if (!promise) {
       throw new Error('参数必须是一个Promise类型');
     }
+    // 保存上一次调用的方法
+    setRetry(() => () => {
+      if (runConfig?.retry) {
+        run(runConfig.retry(), runConfig);
+      }
+    });
     setState({ stat: 'loading', data: null, error: null });
     return promise
       .then((data) => {
@@ -55,6 +66,7 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
     setData,
     setError,
     run,
+    retry,
     ...state,
   };
 };

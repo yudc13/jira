@@ -1,6 +1,5 @@
 import React from 'react';
 import { Input, Form } from 'antd';
-import IdSelect from '@/components/id-select';
 import UserSelect from '@/components/user-select';
 
 export interface User {

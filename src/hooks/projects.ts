@@ -7,9 +7,12 @@ import { useEffect } from 'react';
 
 export const useProject = (params?: Params) => {
   const http = useHttp();
-  const { run, data, isLoading, isError, error } = useAsync<Project[]>();
+  const { run, retry, data, isLoading, isError, error } = useAsync<Project[]>();
   useEffect(() => {
-    run(http<Project[]>('projects', { data: clearObject(params || []) }));
+    const fetchProjects = () =>
+      http<Project[]>('projects', { data: clearObject(params || []) });
+
+    run(fetchProjects(), { retry: fetchProjects });
     // eslint-disable-next-line
   }, [params]);
   return {
@@ -17,11 +20,12 @@ export const useProject = (params?: Params) => {
     isError,
     isLoading,
     error,
+    retry,
   };
 };
 
 export const useEditProject = () => {
-  const { run, ...rest } = useAsync();
+  const { run, ...asyncResult } = useAsync();
   const http = useHttp();
   const mutate = (param: Partial<Project>) => {
     return run(
@@ -33,6 +37,23 @@ export const useEditProject = () => {
   };
   return {
     mutate,
-    rest,
+    ...asyncResult,
+  };
+};
+
+export const useAddProject = () => {
+  const { run, ...asyncResult } = useAsync();
+  const http = useHttp();
+  const mutate = (param: Partial<Project>) => {
+    return run(
+      http(`projects`, {
+        data: param,
+        method: 'POST',
+      })
+    );
+  };
+  return {
+    mutate,
+    ...asyncResult,
   };
 };

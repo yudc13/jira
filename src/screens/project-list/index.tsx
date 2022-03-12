@@ -22,6 +22,7 @@ const ProjectList = () => {
     isLoading,
     error,
     data: projects,
+    retry,
   } = useProject(debounceParams);
 
   const { data: users } = useUsers();
@@ -33,6 +34,7 @@ const ProjectList = () => {
         <Typography.Text type="danger">{error?.message}</Typography.Text>
       )}
       <List
+        refresh={retry}
         dataSource={projects || []}
         users={users || []}
         loading={isLoading}
