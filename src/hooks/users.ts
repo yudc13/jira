@@ -8,7 +8,6 @@ export const useUsers = () => {
   const { run, data } = useAsync<User[]>();
   useEffect(() => {
     run(http<User[]>(`users`, {}));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return {
     data,

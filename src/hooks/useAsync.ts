@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import useMountedRef from '@/hooks/useMountedRef';
 
 interface State<S> {
@@ -21,47 +21,47 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
   const mountedRef = useMountedRef();
   // useState初始值是一个惰性的state，只有在初次渲染的时候调用
   const [retry, setRetry] = useState(() => () => {});
-  const setData = (data: D) => {
+  const setData = useCallback((data: D) => {
     setState({
       stat: 'success',
       data,
       error: null,
     });
-  };
-  const setError = (error: Error) => {
+  }, []);
+  const setError = useCallback((error: Error) => {
     setState({
       error,
       stat: 'error',
       data: null,
     });
-  };
-  const run = (
-    promise: Promise<D>,
-    runConfig?: { retry: () => Promise<D> }
-  ) => {
-    if (!promise) {
-      throw new Error('参数必须是一个Promise类型');
-    }
-    // 保存上一次调用的方法
-    setRetry(() => () => {
-      if (runConfig?.retry) {
-        run(runConfig.retry(), runConfig);
+  }, []);
+  const run = useCallback(
+    (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
+      if (!promise) {
+        throw new Error('参数必须是一个Promise类型');
       }
-    });
-    setState({ stat: 'loading', data: null, error: null });
-    return promise
-      .then((data) => {
-        if (mountedRef.current) {
-          setData(data);
+      // 保存上一次调用的方法
+      setRetry(() => () => {
+        if (runConfig?.retry) {
+          run(runConfig.retry(), runConfig);
         }
-        return data;
-      })
-      .catch((error) => {
-        setError(error);
-        // catch会消化异常，如果不主动抛出错误 外面将无法捕获到异常
-        return Promise.reject(error);
       });
-  };
+      setState((preState) => ({ ...preState, stat: 'loading' }));
+      return promise
+        .then((data) => {
+          if (mountedRef.current) {
+            setData(data);
+          }
+          return data;
+        })
+        .catch((error) => {
+          setError(error);
+          // catch会消化异常，如果不主动抛出错误 外面将无法捕获到异常
+          return Promise.reject(error);
+        });
+    },
+    [mountedRef, setData, setError]
+  );
   return {
     isIdle: state.stat === 'idle',
     isError: state.stat === 'error',

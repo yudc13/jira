@@ -8,8 +8,7 @@ const useUrlQueryParam = <K extends string>(keys: K[]) => {
     return keys.reduce((pre, key) => {
       return { ...pre, [key]: searchParams.get(key) || '' };
     }, {} as { [k in K]: string });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [keys, searchParams]);
   const setParams = useCallback(
     (param: Partial<{ [k in K]: unknown }>) => {
       setSearchParams(

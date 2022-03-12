@@ -50,8 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     run(bootstrapUser());
-    // eslint-disable-next-line
-  }, []);
+  }, [run]);
 
   if (isIdle || isLoading) {
     return <FullLoadingPage />;

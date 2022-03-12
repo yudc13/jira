@@ -13,8 +13,7 @@ export const useProject = (params?: Params) => {
       http<Project[]>('projects', { data: clearObject(params || []) });
 
     run(fetchProjects(), { retry: fetchProjects });
-    // eslint-disable-next-line
-  }, [params]);
+  }, [http, params, run]);
   return {
     data,
     isError,

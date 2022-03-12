@@ -1,9 +1,12 @@
 import useUrlQueryParam from '@/hooks/useUrlQueryParam';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 // 项目列表搜索参数
 export const useProjectSearchParams = () => {
-  const [params, setParams] = useUrlQueryParam(['name', 'personId']);
+  const [searchKeys] = useState(['name', 'personId']);
+  const [params, setParams] = useUrlQueryParam(
+    searchKeys as ['name', 'personId']
+  );
   const searchParams = useMemo(
     () => ({
       ...params,
