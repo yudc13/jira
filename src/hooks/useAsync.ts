@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import useMountedRef from '@/hooks/useMountedRef';
 
 interface State<S> {
   error: Error | null;
@@ -17,6 +18,7 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
     ...defaultState,
     ...initialState,
   });
+  const mountedRef = useMountedRef();
   // useState初始值是一个惰性的state，只有在初次渲染的时候调用
   const [retry, setRetry] = useState(() => () => {});
   const setData = (data: D) => {
@@ -49,7 +51,9 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
     setState({ stat: 'loading', data: null, error: null });
     return promise
       .then((data) => {
-        setData(data);
+        if (mountedRef.current) {
+          setData(data);
+        }
         return data;
       })
       .catch((error) => {
