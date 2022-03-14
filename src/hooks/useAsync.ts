@@ -1,4 +1,4 @@
-import { Dispatch, useCallback, useReducer, useState } from 'react';
+import { useCallback, useReducer, useState } from 'react';
 import useMountedRef from '@/hooks/useMountedRef';
 
 interface State<S> {
