@@ -9,6 +9,7 @@ import { Row } from './components/libs';
 
 import { ReactComponent as Logo } from '@/assets/software-logo.svg';
 import ProjectPopover from '@/components/project-popover';
+import ProjectModal from '@/screens/project-list/project-modal';
 
 const AuthenticatedApp = () => {
   return (
@@ -23,6 +24,7 @@ const AuthenticatedApp = () => {
           </Routes>
         </BrowserRouter>
       </Main>
+      <ProjectModal />
     </div>
   );
 };
