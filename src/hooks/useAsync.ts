@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { Dispatch, useCallback, useReducer, useState } from 'react';
 import useMountedRef from '@/hooks/useMountedRef';
 
 interface State<S> {
@@ -13,28 +13,48 @@ const defaultState: State<null> = {
   error: null,
 };
 
-const useAsync = <D>(initialState?: Partial<State<D>>) => {
-  const [state, setState] = useState<State<D | null>>({
-    ...defaultState,
-    ...initialState,
-  });
+const useSafeDispatch = <D>(dispatch: (...args: D[]) => void) => {
   const mountedRef = useMountedRef();
+  return useCallback(
+    (...args: D[]) => (mountedRef.current ? dispatch(...args) : void 0),
+    [dispatch, mountedRef]
+  );
+};
+
+const useAsync = <D>(initialState?: Partial<State<D>>) => {
+  const [state, dispatch] = useReducer(
+    (state: State<D | null>, newState: Partial<State<D | null>>) => ({
+      ...state,
+      ...newState,
+    }),
+    {
+      ...defaultState,
+      ...initialState,
+    }
+  );
+  const safeDispatch = useSafeDispatch(dispatch);
   // useState初始值是一个惰性的state，只有在初次渲染的时候调用
   const [retry, setRetry] = useState(() => () => {});
-  const setData = useCallback((data: D) => {
-    setState({
-      stat: 'success',
-      data,
-      error: null,
-    });
-  }, []);
-  const setError = useCallback((error: Error) => {
-    setState({
-      error,
-      stat: 'error',
-      data: null,
-    });
-  }, []);
+  const setData = useCallback(
+    (data: D) => {
+      safeDispatch({
+        stat: 'success',
+        data,
+        error: null,
+      });
+    },
+    [safeDispatch]
+  );
+  const setError = useCallback(
+    (error: Error) => {
+      safeDispatch({
+        error,
+        stat: 'error',
+        data: null,
+      });
+    },
+    [safeDispatch]
+  );
   const run = useCallback(
     (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
       if (!promise) {
@@ -46,12 +66,10 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
           run(runConfig.retry(), runConfig);
         }
       });
-      setState((preState) => ({ ...preState, stat: 'loading' }));
+      safeDispatch({ stat: 'loading' });
       return promise
         .then((data) => {
-          if (mountedRef.current) {
-            setData(data);
-          }
+          setData(data);
           return data;
         })
         .catch((error) => {
@@ -60,7 +78,7 @@ const useAsync = <D>(initialState?: Partial<State<D>>) => {
           return Promise.reject(error);
         });
     },
-    [mountedRef, setData, setError]
+    [safeDispatch, setData, setError]
   );
   return {
     isIdle: state.stat === 'idle',
