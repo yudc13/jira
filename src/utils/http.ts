@@ -8,10 +8,8 @@ interface Config extends RequestInit {
   data?: Object;
 }
 
-export const http = async <T>(
-  url: string,
-  { data, token, headers, ...customConfig }: Config
-): Promise<T> => {
+export const http = async <T>(url: string, conf?: Config): Promise<T> => {
+  const { data, token, headers, ...customConfig } = conf || {};
   const config = {
     method: 'GET',
     headers: {

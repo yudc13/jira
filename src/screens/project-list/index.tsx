@@ -1,40 +1,29 @@
 import styled from '@emotion/styled';
-import { Typography } from 'antd';
 import List from './list';
 import SearchPanel, { Params } from './search-panel';
 import useDebounce from '@/hooks/useDebounce';
-import { useProject } from '@/hooks/projects';
+import { useProjects } from '@/hooks/projects';
 import { useUsers } from '@/hooks/users';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import { useProjectSearchParams } from '@/screens/project-list/utils';
+import { ErrorBox } from '@/components/libs';
 
 const ProjectList = () => {
   useDocumentTitle('项目列表');
 
   const [params, setParams] = useProjectSearchParams();
 
-  console.log(params);
-
   const debounceParams = useDebounce<Params>(params, 1000);
 
-  const {
-    isError,
-    isLoading,
-    error,
-    data: projects,
-    retry,
-  } = useProject(debounceParams);
+  const { isLoading, error, data: projects } = useProjects(debounceParams);
 
   const { data: users } = useUsers();
 
   return (
     <Container>
       <SearchPanel params={params} setParams={(params) => setParams(params)} />
-      {isError && (
-        <Typography.Text type="danger">{error?.message}</Typography.Text>
-      )}
+      <ErrorBox error={error} />
       <List
-        refresh={retry}
         dataSource={projects || []}
         users={users || []}
         loading={isLoading}

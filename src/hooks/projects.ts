@@ -1,78 +1,52 @@
 import { useHttp } from '@/utils/http';
-import useAsync from '@/hooks/useAsync';
 import { Params } from '@/screens/project-list/search-panel';
 import { Project } from '@/screens/project-list/list';
-import { clearObject } from '@/utils';
-import { useCallback, useEffect } from 'react';
-import useUrlQueryParam from '@/hooks/useUrlQueryParam';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-export const useProject = (params?: Params) => {
+export const useProjects = (params?: Params) => {
   const http = useHttp();
-  const { run, retry, data, isLoading, isError, error } = useAsync<Project[]>();
-  useEffect(() => {
-    const fetchProjects = () =>
-      http<Project[]>('projects', { data: clearObject(params || []) });
-
-    run(fetchProjects(), { retry: fetchProjects });
-  }, [http, params, run]);
-  return {
-    data,
-    isError,
-    isLoading,
-    error,
-    retry,
-  };
+  return useQuery<Project[], Error>(['projects', params], () =>
+    http<Project[]>('projects', { data: params })
+  );
 };
 
 export const useEditProject = () => {
-  const { run, ...asyncResult } = useAsync();
   const http = useHttp();
-  const mutate = (param: Partial<Project>) => {
-    return run(
-      http(`projects/${param.id}`, {
-        data: param,
+  const queryClient = useQueryClient();
+  return useMutation(
+    (params: Partial<Project>) =>
+      http(`projects/${params.id}`, {
+        data: params,
         method: 'PATCH',
-      })
-    );
-  };
-  return {
-    mutate,
-    ...asyncResult,
-  };
+      }),
+    {
+      onSuccess: () => queryClient.invalidateQueries('projects'),
+    }
+  );
 };
 
 export const useAddProject = () => {
-  const { run, ...asyncResult } = useAsync();
   const http = useHttp();
-  const mutate = (param: Partial<Project>) => {
-    return run(
+  const queryClient = useQueryClient();
+  return useMutation(
+    (params: Partial<Project>) =>
       http(`projects`, {
-        data: param,
+        data: params,
         method: 'POST',
-      })
-    );
-  };
-  return {
-    mutate,
-    ...asyncResult,
-  };
+      }),
+    {
+      onSuccess: () => queryClient.invalidateQueries('projects'),
+    }
+  );
 };
 
-export const useProjectModal = () => {
-  const [{ projectModal }, setProjectModal] = useUrlQueryParam([
-    'projectModal',
-  ]);
-  const open = useCallback(
-    () => setProjectModal({ projectModal: true }),
-    [setProjectModal]
+export const useProject = (projectId?: number) => {
+  const http = useHttp();
+  return useQuery<Project, Error>(
+    ['project', { projectId }],
+    () => http(`projects/${projectId}`),
+    {
+      enabled: !!projectId,
+    }
   );
-  const close = useCallback(
-    () => setProjectModal({ projectModal: undefined }),
-    [setProjectModal]
-  );
-  return {
-    projectModalOpen: projectModal === 'true',
-    open,
-    close,
-  };
 };

@@ -4,8 +4,8 @@ import { Select } from 'antd';
 type SelectProps = React.ComponentProps<typeof Select>;
 interface IdSelectProps
   extends Omit<SelectProps, 'value' | 'onChange' | 'options'> {
-  value: null | undefined | string | number;
-  onChange: (value?: number) => void;
+  value?: null | undefined | string | number;
+  onChange?: (value?: number) => void;
   defaultOptionName?: string;
   options: { name: string; id: number }[];
 }
@@ -23,7 +23,7 @@ const IdSelect = (props: IdSelectProps) => {
   return (
     <Select
       value={options.length > 0 ? toNumber(value) : 0}
-      onChange={(value) => onChange(toNumber(value))}
+      onChange={(value) => onChange?.(toNumber(value))}
       {...restProps}
     >
       {defaultOptionName && (

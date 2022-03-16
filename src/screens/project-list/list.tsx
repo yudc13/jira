@@ -1,10 +1,12 @@
 import React from 'react';
-import { Table, TableProps } from 'antd';
+import { Table, TableProps, Dropdown, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { User } from './search-panel';
 import Pin from '@/components/pin';
 import { useEditProject } from '@/hooks/projects';
+import { ButtonNoPadding } from '@/components/libs';
+import { useProjectModal } from '@/screens/project-list/utils';
 
 export interface Project {
   id: number;
@@ -16,14 +18,14 @@ export interface Project {
 }
 export interface ListProps extends TableProps<Project> {
   users: User[];
-  refresh?: () => void;
 }
 
 const List: React.FC<ListProps> = ({ users, ...rest }) => {
   const { mutate } = useEditProject();
-  // 这里使用柯里化是做
-  const pinProject = (id: number) => (pin: boolean) =>
-    mutate({ id, pin }).then(rest.refresh);
+  const { startEdit } = useProjectModal();
+  // 这里使用柯里化来做
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
+  const editProject = (id: number) => startEdit(id);
   const columns = [
     {
       key: 'pin',
@@ -57,6 +59,24 @@ const List: React.FC<ListProps> = ({ users, ...rest }) => {
       dataIndex: 'created',
       render: (created: number) =>
         created ? dayjs(created).format('YYYY-MM-DD') : '',
+    },
+    {
+      render: (value: any, project: Project) => {
+        return (
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item key={'edit'} onClick={() => editProject(project.id)}>
+                  编辑
+                </Menu.Item>
+                <Menu.Item key={'delete'}>删除</Menu.Item>
+              </Menu>
+            }
+          >
+            <ButtonNoPadding type={'link'}>...</ButtonNoPadding>
+          </Dropdown>
+        );
+      },
     },
   ];
   return <Table rowKey="id" pagination={false} columns={columns} {...rest} />;
