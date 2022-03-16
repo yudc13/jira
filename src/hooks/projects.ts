@@ -3,7 +3,8 @@ import useAsync from '@/hooks/useAsync';
 import { Params } from '@/screens/project-list/search-panel';
 import { Project } from '@/screens/project-list/list';
 import { clearObject } from '@/utils';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import useUrlQueryParam from '@/hooks/useUrlQueryParam';
 
 export const useProject = (params?: Params) => {
   const http = useHttp();
@@ -54,5 +55,24 @@ export const useAddProject = () => {
   return {
     mutate,
     ...asyncResult,
+  };
+};
+
+export const useProjectModal = () => {
+  const [{ projectModal }, setProjectModal] = useUrlQueryParam([
+    'projectModal',
+  ]);
+  const open = useCallback(
+    () => setProjectModal({ projectModal: true }),
+    [setProjectModal]
+  );
+  const close = useCallback(
+    () => setProjectModal({ projectModal: undefined }),
+    [setProjectModal]
+  );
+  return {
+    projectModalOpen: projectModal === 'true',
+    open,
+    close,
   };
 };

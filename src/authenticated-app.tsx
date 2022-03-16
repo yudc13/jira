@@ -14,17 +14,17 @@ import ProjectModal from '@/screens/project-list/project-modal';
 const AuthenticatedApp = () => {
   return (
     <div>
-      <PageHeader />
-      <Main>
-        <BrowserRouter>
+      <BrowserRouter>
+        <Main>
+          <PageHeader />
           <Routes>
             <Route path={'/'} element={<Navigate to={`/projects`} />} />
             <Route path={'/projects'} element={<ProjectList />} />
             <Route path={'/projects/:projectId/*'} element={<Project />} />
           </Routes>
-        </BrowserRouter>
-      </Main>
-      <ProjectModal />
+          <ProjectModal />
+        </Main>
+      </BrowserRouter>
     </div>
   );
 };

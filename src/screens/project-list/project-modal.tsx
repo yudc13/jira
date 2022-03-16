@@ -1,20 +1,12 @@
 import React from 'react';
 import { Drawer } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  projectListActions,
-  selectProjectModalOpen,
-} from '@/screens/project-list/project-list.slice';
+
+import { useProjectModal } from '@/hooks/projects';
 
 const ProjectModal = () => {
-  const dispatch = useDispatch();
-  const projectModalOpen = useSelector(selectProjectModalOpen);
+  const { projectModalOpen, close } = useProjectModal();
   return (
-    <Drawer
-      visible={projectModalOpen}
-      width={'100%'}
-      onClose={() => dispatch(projectListActions.closeProjectModal())}
-    >
+    <Drawer visible={projectModalOpen} width={'100%'} onClose={close}>
       <h1>Project Modal</h1>
     </Drawer>
   );
