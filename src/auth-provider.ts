@@ -7,7 +7,7 @@ export const apiUrl = process.env.REACT_APP_API_URL;
 export const getToken = () => window.localStorage.getItem(AuthTokenKey);
 
 export const handleUserResponse = ({ user }: { user: User }) => {
-  window.localStorage.setItem(AuthTokenKey, user.token);
+  window.localStorage.setItem(AuthTokenKey, user?.token || '');
   return user;
 };
 

@@ -5,7 +5,7 @@ import UserSelect from '@/components/user-select';
 export interface User {
   id: number;
   name: string;
-  token: string;
+  token?: string;
 }
 export interface Params {
   personId?: number;
